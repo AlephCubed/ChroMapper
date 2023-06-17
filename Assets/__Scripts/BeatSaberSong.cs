@@ -189,8 +189,8 @@ public class BeatSaberSong
                     subNode["_difficulty"] = diff.Difficulty;
                     subNode["_difficultyRank"] = diff.DifficultyRank;
                     subNode["_beatmapFilename"] = diff.BeatmapFilename;
-                    subNode[MapLoader.heckUnderscore + "noteJumpMovementSpeed"] = diff.NoteJumpMovementSpeed;
-                    subNode[MapLoader.heckUnderscore + "noteJumpStartBeatOffset"] = diff.NoteJumpStartBeatOffset;
+                    subNode["_  noteJumpMovementSpeed"] = diff.NoteJumpMovementSpeed;
+                    subNode["_noteJumpStartBeatOffset"] = diff.NoteJumpStartBeatOffset;
                     subNode["_customData"] = diff.CustomData ?? new JSONObject();
 
                     /*
@@ -402,8 +402,8 @@ public class BeatSaberSong
                                 {
                                     Difficulty = d["_difficulty"].Value,
                                     DifficultyRank = d["_difficultyRank"].AsInt,
-                                    NoteJumpMovementSpeed = d[MapLoader.heckUnderscore + "noteJumpMovementSpeed"].AsFloat,
-                                    NoteJumpStartBeatOffset = d[MapLoader.heckUnderscore + "noteJumpStartBeatOffset"].AsFloat,
+                                    NoteJumpMovementSpeed = d["_noteJumpMovementSpeed"].AsFloat,
+                                    NoteJumpStartBeatOffset = d["_noteJumpStartBeatOffset"].AsFloat,
                                     CustomData = d["_customData"]
                                 };
                                 if (d["_customData"]["_colorLeft"] != null)
