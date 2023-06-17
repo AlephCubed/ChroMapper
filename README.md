@@ -2,6 +2,11 @@
 
 [![Crowdin](https://badges.crowdin.net/chromapper/localized.svg)](https://crowdin.com/project/chromapper)
 
+# !!! This is an old development fork of ChroMapper with tentative V3 lighting support !!!
+For Normal, up-to-date ChroMapper, [Click Here.](https://github.com/Caeden117/ChroMapper)
+
+Special thanks to CCDV2 for adding V3 lighting almost entierly on their own.
+
 # This is ChroMapper.
 ChroMapper is a Unity-based map editor for Beat Saber, specializing in modded map creation. ChroMapper also offers various tools and features that tailor towards the advanced mappers of the community.
 
