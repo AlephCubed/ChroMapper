@@ -10,7 +10,6 @@ public class BongoCat : MonoBehaviour
 
     private SpriteRenderer comp;
     private BongoCatPreset selectedBongoCat;
-    private int oldBongoCatValue = 0;
 
     private float larmTimeout;
     private float rarmTimeout;

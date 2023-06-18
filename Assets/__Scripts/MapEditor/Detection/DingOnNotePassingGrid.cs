@@ -14,7 +14,6 @@ public class DingOnNotePassingGrid : MonoBehaviour
     [SerializeField] private AudioTimeSyncController atsc;
     [SerializeField] private AudioSource source;
     [SerializeField] private SoundList[] soundLists;
-    [FormerlySerializedAs("DensityCheckOffset")] [SerializeField] private int densityCheckOffset = 2;
     [FormerlySerializedAs("ThresholdInNoteTime")] [SerializeField] private float thresholdInNoteTime = 0.25f;
     [SerializeField] private AudioUtil audioUtil;
     [SerializeField] private NotesContainer container;
