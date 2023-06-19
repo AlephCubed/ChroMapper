@@ -189,7 +189,7 @@ public class BeatSaberSong
                     subNode["_difficulty"] = diff.Difficulty;
                     subNode["_difficultyRank"] = diff.DifficultyRank;
                     subNode["_beatmapFilename"] = diff.BeatmapFilename;
-                    subNode["_  noteJumpMovementSpeed"] = diff.NoteJumpMovementSpeed;
+                    subNode["_noteJumpMovementSpeed"] = diff.NoteJumpMovementSpeed;
                     subNode["_noteJumpStartBeatOffset"] = diff.NoteJumpStartBeatOffset;
                     subNode["_customData"] = diff.CustomData ?? new JSONObject();
 
