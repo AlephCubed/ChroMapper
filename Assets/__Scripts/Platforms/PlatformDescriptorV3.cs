@@ -137,7 +137,15 @@ public class PlatformDescriptorV3 : PlatformDescriptor
 
         float deltaAlpha = eb.BrightnessDistribution;
         if (eb.BrightnessDistributionType == 1) deltaAlpha /= Intervals(filteredLights);
+
         float deltaTime = eb.Distribution;
+
+        if (eb.DistributionType == 1)
+            deltaTime -= eb.EventDatas[eb.EventDatas.Count - 1].AddedBeat;
+
+        if (deltaTime < 0)
+            deltaTime = 0;
+
         if (eb.DistributionType == 1) deltaTime /= Intervals(filteredLights);
         for (int i = 0; i < eb.EventDatas.Count; ++i)
         {
@@ -233,7 +241,15 @@ public class PlatformDescriptorV3 : PlatformDescriptor
         float deltaRotation = eb.RotationDistribution;
         if (eb.ReverseRotation == 1) deltaRotation = -deltaRotation;
         if (eb.RotationDistributionType == 1) deltaRotation /= Intervals(filteredLights);
+
         float deltaTime = eb.Distribution;
+        
+        if (eb.DistributionType == 1)
+            deltaTime -= eb.EventDatas[eb.EventDatas.Count - 1].AddedBeat;
+
+        if (deltaTime < 0)
+            deltaTime = 0;
+
         if (eb.DistributionType == 1) deltaTime /= Intervals(filteredLights);
         for (int i = 0; i < eb.EventDatas.Count; ++i)
         {
