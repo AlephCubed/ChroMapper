@@ -143,7 +143,15 @@ public class LightColorEventsContainer : BeatmapObjectContainerCollection
 
                     float deltaAlpha = colorEventBox.BrightnessDistribution;
                     if (colorEventBox.BrightnessDistributionType == 1) deltaAlpha /= PlatformDescriptorV3.Intervals(filteredLights);
+
                     float deltaTime = colorEventBox.Distribution;
+
+                    if (colorEventBox.DistributionType == 1)
+                        deltaTime -= colorEventBox.EventDatas[colorEventBox.EventDatas.Count - 1].AddedBeat;
+
+                    if (deltaTime < 0)
+                        deltaTime = 0;
+
                     if (colorEventBox.DistributionType == 1) deltaTime /= PlatformDescriptorV3.Intervals(filteredLights);
 
                     for (int i = 0; i < colorEventBox.EventDatas.Count; ++i)

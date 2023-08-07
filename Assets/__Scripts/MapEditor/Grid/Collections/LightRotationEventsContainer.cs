@@ -113,7 +113,15 @@ public class LightRotationEventsContainer : BeatmapObjectContainerCollection
                     float deltaDegree = rotationEventBox.RotationDistribution;
                     if (rotationEventBox.ReverseRotation == 1) deltaDegree = -deltaDegree;
                     if (rotationEventBox.RotationDistributionType == 1) deltaDegree /= PlatformDescriptorV3.Intervals(filteredRotations);
+
                     float deltaTime = rotationEventBox.Distribution;
+
+                    if (rotationEventBox.DistributionType == 1)
+                        deltaTime -= rotationEventBox.EventDatas[rotationEventBox.EventDatas.Count - 1].AddedBeat;
+
+                    if (deltaTime < 0)
+                        deltaTime = 0;
+
                     if (rotationEventBox.DistributionType == 1) deltaTime /= PlatformDescriptorV3.Intervals(filteredRotations);
                     int axis = rotationEventBox.Axis;
 
