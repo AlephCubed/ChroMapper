@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using SimpleJSON;
 using UnityEngine;
 
-/// <summary>
-/// <see cref="BeatmapBPMChangeV3"/> currently disabled
-/// </summary>
 public class BeatmapBPMChangeV3 : BeatmapBPMChange
 {
     public BeatmapBPMChangeV3(JSONNode node)
@@ -28,7 +25,7 @@ public class BeatmapBPMChangeV3 : BeatmapBPMChange
         JSONNode node = new JSONObject();
         node["b"] = Math.Round(Time, DecimalPrecision);
         node["m"] = Bpm;
-        if (CustomData != null) node[BeatmapObjectV3CustomDataKey] = CustomData;
+        if (CustomData != null) node["_customData"] = CustomData;
         return node;
     }
 }
