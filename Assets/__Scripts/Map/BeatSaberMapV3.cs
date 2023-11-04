@@ -136,7 +136,7 @@ public class BeatSaberMapV3 : BeatSaberMap
             var basicEventTypesWithKeywords = new JSONObject();
             foreach (var k in BasicEventTypesWithKeywords.Keys) basicEventTypesWithKeywords[k] = BasicEventTypesWithKeywords[k];
 
-            MainNode["bpmEvents"] = CleanupArray(bpmEvents, "b");
+            MainNode["_bpmEvents"] = CleanupArray(bpmEvents, "b");
             MainNode["rotationEvents"] = rotationEvents;
             MainNode["colorNotes"] = CleanupArray(colorNotes, "b");
             MainNode["bombNotes"] = CleanupArray(bombNotes, "b");
@@ -212,7 +212,7 @@ public class BeatSaberMapV3 : BeatSaberMap
                     case "version":
                         mapV3.Version = node.Value;
                         break;
-                    case "bpmEvents":
+                    case "_bpmEvents":
                         foreach (JSONNode n in node) bpmEventsList.Add(new BeatmapBPMChangeV3(n));
                         break;
                     case "rotationEvents":
