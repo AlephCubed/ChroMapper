@@ -11,7 +11,7 @@ public class MeasureLinesController : MonoBehaviour
     [SerializeField] private Transform noteGrid;
     [SerializeField] private Transform frontNoteGridScaling;
     [SerializeField] private Transform measureLineGrid;
-    [SerializeField] private BPMChangesContainer bpmChangesContainer;
+    [SerializeField] public BPMChangesContainer bpmChangesContainer;
     [SerializeField] private GridChild measureLinesGridChild;
     [SerializeField] private BookmarkRenderingController bookmarkRenderingController;
     private readonly List<(float, TextMeshProUGUI)> measureTextsByBeat = new List<(float, TextMeshProUGUI)>();

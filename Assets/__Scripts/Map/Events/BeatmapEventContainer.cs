@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -48,6 +49,9 @@ public class BeatmapEventContainer : BeatmapObjectContainer
     [SerializeField] private GameObject[] eventModels;
     [SerializeField] private CreateEventTypeLabels labels;
 
+    [SerializeField] private AudioTimeSyncController atsc;
+    [SerializeField] private MeasureLinesController measureLinesController;
+
     private float oldAlpha = -1;
 
     public override BeatmapObject ObjectData { get => EventData; set => EventData = (MapEvent)value; }
@@ -86,6 +90,8 @@ public class BeatmapEventContainer : BeatmapObjectContainer
             );
         }
 
+        UpdateToModifiedPosition();
+
         transform.localEulerAngles = Vector3.zero;
         if (EventData.LightGradient != null && Settings.Instance.VisualizeChromaGradients)
         {
@@ -94,6 +100,27 @@ public class BeatmapEventContainer : BeatmapObjectContainer
         //Move event up or down enough to give a constant distance from the bottom of the event, taking the y alpha scale into account
         if (Settings.Instance.VisualizeChromaAlpha) transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + ((GetHeight() - 1f) / 2.775f), transform.localPosition.z);
         UpdateCollisionGroups();
+    }
+
+    public void UpdateToModifiedPosition()
+    {
+        var rawBeatsInSong =
+            Mathf.FloorToInt(atsc.GetBeatFromSeconds(BeatSaberSongContainer.Instance.LoadedSong.length));
+        float jsonBeat = 0;
+        var modifiedBeats = 0;
+        var songBpm = BeatSaberSongContainer.Instance.Song.BeatsPerMinute;
+
+        var allBpmChanges = new List<BeatmapBPMChange> { new BeatmapBPMChange(songBpm, 0) };
+        allBpmChanges.AddRange(measureLinesController.bpmChangesContainer.LoadedObjects.Cast<BeatmapBPMChange>());
+
+        while (jsonBeat <= rawBeatsInSong)
+        {
+            transform.localPosition = new Vector3(transform.localPosition.x, jsonBeat * EditorScaleController.EditorScale, transform.localPosition.z);
+
+            modifiedBeats++;
+            var last = allBpmChanges.Last(x => x.Beat <= modifiedBeats);
+            jsonBeat = ((modifiedBeats - last.Beat) / last.Bpm * songBpm) + last.Time;
+        }
     }
 
     public void ChangeColor(Color color, bool updateMaterials = true)
