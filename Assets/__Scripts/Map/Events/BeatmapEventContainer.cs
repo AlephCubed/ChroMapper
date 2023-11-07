@@ -56,12 +56,14 @@ public class BeatmapEventContainer : BeatmapObjectContainer
 
     public override BeatmapObject ObjectData { get => EventData; set => EventData = (MapEvent)value; }
 
-    public static BeatmapEventContainer SpawnEvent(EventsContainer eventsContainer, MapEvent data, ref GameObject prefab, ref EventAppearanceSO eventAppearanceSO, ref CreateEventTypeLabels labels)
+    public static BeatmapEventContainer SpawnEvent(EventsContainer eventsContainer, MapEvent data, ref GameObject prefab, ref EventAppearanceSO eventAppearanceSO, ref CreateEventTypeLabels labels, ref AudioTimeSyncController audioTimeSyncController, ref MeasureLinesController measureLinesController)
     {
         var container = Instantiate(prefab).GetComponent<BeatmapEventContainer>();
         container.EventData = data;
         container.EventsContainer = eventsContainer;
         container.eventAppearance = eventAppearanceSO;
+        container.atsc = audioTimeSyncController;
+        container.measureLinesController = measureLinesController;
         container.labels = labels;
         container.transform.localEulerAngles = Vector3.zero;
         return container;
@@ -77,7 +79,7 @@ public class BeatmapEventContainer : BeatmapObjectContainer
             transform.localPosition = new Vector3(
                 -0.5f,
                 0.5f,
-                EventData.Time * EditorScaleController.EditorScale
+                GetModifiedZ()
             );
             SafeSetActive(false);
         }
@@ -86,11 +88,13 @@ public class BeatmapEventContainer : BeatmapObjectContainer
             transform.localPosition = new Vector3(
                 position?.x ?? 0,
                 position?.y ?? 0,
-                EventData.Time * EditorScaleController.EditorScale
+                GetModifiedZ()
             );
         }
 
-        UpdateToModifiedPosition();
+        // UpdateToModifiedPosition();
+
+        Debug.Log("Set pos to " + transform.localPosition.z);
 
         transform.localEulerAngles = Vector3.zero;
         if (EventData.LightGradient != null && Settings.Instance.VisualizeChromaGradients)
@@ -102,8 +106,34 @@ public class BeatmapEventContainer : BeatmapObjectContainer
         UpdateCollisionGroups();
     }
 
+    public float GetModifiedZ() {
+        var songBpm = BeatSaberSongContainer.Instance.Song.BeatsPerMinute;
+
+        var allBpmChanges = new List<BeatmapBPMChange> { new BeatmapBPMChange(songBpm, 0) };
+        allBpmChanges.AddRange(measureLinesController.BpmChangesContainer.LoadedObjects.Cast<BeatmapBPMChange>());
+
+        float beat = allBpmChanges.ElementAt(0).Beat;
+        float modifiedBeat = 0;
+
+        var index = 0;
+
+        if (allBpmChanges.ElementAt(0).Beat < ObjectData.Time) {
+            while (beat < ObjectData.Time) {
+                var gap = allBpmChanges.ElementAt(index + 1).Time - allBpmChanges.ElementAt(index).Time;
+                beat += gap;
+                modifiedBeat += (2 * gap) - (gap * songBpm / allBpmChanges.ElementAt(index).Bpm);
+                index++;
+            }
+        } else {
+            modifiedBeat = ObjectData.Time;
+        }
+
+        return modifiedBeat * EditorScaleController.EditorScale;
+    }
+
     public void UpdateToModifiedPosition()
     {
+
         var rawBeatsInSong =
             Mathf.FloorToInt(atsc.GetBeatFromSeconds(BeatSaberSongContainer.Instance.LoadedSong.length));
         float jsonBeat = 0;
@@ -111,16 +141,16 @@ public class BeatmapEventContainer : BeatmapObjectContainer
         var songBpm = BeatSaberSongContainer.Instance.Song.BeatsPerMinute;
 
         var allBpmChanges = new List<BeatmapBPMChange> { new BeatmapBPMChange(songBpm, 0) };
-        allBpmChanges.AddRange(measureLinesController.bpmChangesContainer.LoadedObjects.Cast<BeatmapBPMChange>());
+        allBpmChanges.AddRange(measureLinesController.BpmChangesContainer.LoadedObjects.Cast<BeatmapBPMChange>());
 
-        while (jsonBeat <= rawBeatsInSong)
+        while (jsonBeat <= ObjectData.Time)
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, jsonBeat * EditorScaleController.EditorScale, transform.localPosition.z);
-
             modifiedBeats++;
             var last = allBpmChanges.Last(x => x.Beat <= modifiedBeats);
             jsonBeat = ((modifiedBeats - last.Beat) / last.Bpm * songBpm) + last.Time;
         }
+
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, jsonBeat * EditorScaleController.EditorScale);
     }
 
     public void ChangeColor(Color color, bool updateMaterials = true)

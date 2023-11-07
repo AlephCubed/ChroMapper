@@ -22,6 +22,8 @@ public class EventsContainer : BeatmapObjectContainerCollection, CMInput.IEventG
     [SerializeField] private LaserSpeedController laserSpeedController;
     [SerializeField] private CountersPlusController countersPlus;
 
+    [SerializeField] private MeasureLinesController measureLinesController;
+
     public int EventTypeToPropagate = MapEvent.EventTypeRingLights;
     public int EventTypePropagationSize;
 
@@ -281,7 +283,7 @@ public class EventsContainer : BeatmapObjectContainerCollection, CMInput.IEventG
     }
 
     public override BeatmapObjectContainer CreateContainer() =>
-        BeatmapEventContainer.SpawnEvent(this, null, ref eventPrefab, ref eventAppearanceSo, ref labels);
+        BeatmapEventContainer.SpawnEvent(this, null, ref eventPrefab, ref eventAppearanceSo, ref labels, ref AudioTimeSyncController, ref measureLinesController);
 
     protected override void UpdateContainerData(BeatmapObjectContainer con, BeatmapObject obj)
     {
